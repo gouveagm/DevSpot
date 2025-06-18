@@ -1,3 +1,4 @@
+using DevSpot.Constants;
 using DevSpot.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -10,8 +11,7 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        builder.Services.AddDbContext<ApplicationDbContext>(options =>
-options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+        builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
         builder.Services.AddDefaultIdentity<IdentityUser>(options =>
         {
@@ -19,6 +19,8 @@ options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")
         })
             .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>();
+
+        builder.Services.AddTransient<RoleSeeder>();
 
         // Add services to the container.
         builder.Services.AddControllersWithViews();
@@ -33,12 +35,20 @@ options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")
             app.UseHsts();
         }
 
+        using (var scope = app.Services.CreateScope())
+        {
+            var roleSeeder = scope.ServiceProvider.GetRequiredService<RoleSeeder>();
+            roleSeeder.SeedRolesAsync().Wait();
+        }
+
         app.UseHttpsRedirection();
         app.UseStaticFiles();
 
         app.UseRouting();
 
         app.UseAuthorization();
+
+        app.MapRazorPages();
 
         app.MapControllerRoute(
             name: "default",
