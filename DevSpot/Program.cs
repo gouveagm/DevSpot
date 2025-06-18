@@ -21,6 +21,7 @@ public class Program
             .AddEntityFrameworkStores<ApplicationDbContext>();
 
         builder.Services.AddTransient<RoleSeeder>();
+        builder.Services.AddTransient<UserSeeder>();
 
         // Add services to the container.
         builder.Services.AddControllersWithViews();
@@ -39,6 +40,9 @@ public class Program
         {
             var roleSeeder = scope.ServiceProvider.GetRequiredService<RoleSeeder>();
             roleSeeder.SeedRolesAsync().Wait();
+
+            var userSeeder = scope.ServiceProvider.GetRequiredService<UserSeeder>();
+            userSeeder.SeedUserAsync().Wait();
         }
 
         app.UseHttpsRedirection();
