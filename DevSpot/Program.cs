@@ -1,7 +1,10 @@
 using DevSpot.Constants;
 using DevSpot.Data;
+using DevSpot.Models;
+using DevSpot.Repository;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Packaging.Core;
 
 namespace DevSpot;
 
@@ -19,6 +22,8 @@ public class Program
         })
             .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>();
+
+        builder.Services.AddScoped<IRepository<JobPosting>, JobPostingRepository>();
 
         builder.Services.AddTransient<RoleSeeder>();
         builder.Services.AddTransient<UserSeeder>();
