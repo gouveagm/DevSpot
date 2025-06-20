@@ -21,9 +21,18 @@ public class UserSeeder
 
     public async Task SeedUserAsync()
     {
-        await this.CreateUserAsync(AdminEmail, AdminDefaultPassword, Roles.Admin);
-        await this.CreateUserAsync(JobSeekerEmail, JobSeekerDefaultPassword, Roles.JobSeeker);
-        await this.CreateUserAsync(EmployerEmail, EmployerDefaultPassword, Roles.Employer);
+        await this.CreateUserIfNotExistAsync(AdminEmail, AdminDefaultPassword, Roles.Admin);
+        await this.CreateUserIfNotExistAsync(JobSeekerEmail, JobSeekerDefaultPassword, Roles.JobSeeker);
+        await this.CreateUserIfNotExistAsync(EmployerEmail, EmployerDefaultPassword, Roles.Employer);
+    }
+
+    private async Task CreateUserIfNotExistAsync(string email, string password, string role)
+    {
+        var user = await this._userManager.FindByEmailAsync(email);
+        if (user == null)
+        {
+            await this.CreateUserAsync(email, password, role);
+        }
     }
 
     private async Task CreateUserAsync(string email, string password, string role)
