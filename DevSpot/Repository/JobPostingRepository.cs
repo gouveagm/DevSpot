@@ -27,14 +27,10 @@ public class JobPostingRepository : IRepository<JobPosting>
             throw new KeyNotFoundException($"JobPosting with ID {id} not found."); 
         }
 
-            this._context.JobPostings.Remove(element);
-            await this._context.SaveChangesAsync();
-        }
-        else
-        {
-            throw new KeyNotFoundException($"JobPosting with ID {id} not found.");
-        }
+        this._context.JobPostings.Remove(element);
+        await this._context.SaveChangesAsync();
     }
+
     public async Task<IEnumerable<JobPosting>> GetAllAsync()
     {
         return await this._context.JobPostings.ToListAsync();
@@ -45,16 +41,12 @@ public class JobPostingRepository : IRepository<JobPosting>
         var element = await this._context.JobPostings.FindAsync(id);
         if (element is null)
         {
-            return element;
-        }
-        else
-        {
             throw new KeyNotFoundException($"JobPosting with ID {id} not found.");
         }
         
         return element;
     }
-
+    
     public async Task UpdateAsync(JobPosting entity)
     {
         this._context.JobPostings.Update(entity);
