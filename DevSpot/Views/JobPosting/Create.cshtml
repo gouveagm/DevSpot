@@ -9,18 +9,28 @@
     <div class="mb-3">
         <label asp-for="Title" class="form-label">Title</label>
         <input type="text" class="form-control" asp-for="Title">
+        <span asp-validation-for="Title" class="text-danger" />
     </div>
     <div class="mb-3">
         <label asp-for="Description" class="form-label">Description</label>
         <textarea type="text" class="form-control" asp-for="Description"></textarea>
+        <span asp-validation-for="Description" class="text-danger" />
     </div>
     <div class="mb-3">
         <label asp-for="Location" class="form-label">Location</label>
         <input type="text" class="form-control" asp-for="Location">
+        <span asp-validation-for="Location" class="text-danger" />
     </div>
     <div class="mb-3">
         <label asp-for="CompanyName" class="form-label">Company Name</label>
         <input type="text" class="form-control" asp-for="CompanyName">
+        <span asp-validation-for="CompanyName" class="text-danger" />
     </div>
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>
+
+@section Scripts {
+	@{
+		await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

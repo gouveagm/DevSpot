@@ -43,7 +43,9 @@ public class JobPostingController : Controller
             };
 
             await _jobPostingRepository.AddAsync(jobPostingEntity);
+            return RedirectToAction(nameof(Index));
         }
-        return RedirectToAction(nameof(Index));
+
+        return View(jobPosting);
     }
 }
