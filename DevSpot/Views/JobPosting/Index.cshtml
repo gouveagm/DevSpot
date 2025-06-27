@@ -1,4 +1,5 @@
-﻿@model IEnumerable<DevSpot.Models.JobPosting>
+﻿@using DevSpot.Constants
+@model IEnumerable<DevSpot.Models.JobPosting>
 @{
 }
 
@@ -7,12 +8,18 @@
 <div class="list-group">
     @foreach (var jobPosting in Model)
     {
-        <a href="#" class="list-group-item list-group-item-action" aria-current="true">
+        <div class="list-group-item list-group-item-action">
             <h3>@jobPosting.Title</h3>
             <p>@jobPosting.Description</p>
             <p><strong>Company:</strong> @jobPosting.CompanyName</p>
             <p><strong>Location:</strong> @jobPosting.Location</p>
             <p><strong>Posted Date:</strong> @jobPosting.PostedDate.ToShortDateString()</p>
-        </a>
+            @if (User.IsInRole(Roles.Admin) || User.IsInRole(Roles.Employer))
+            {
+                    <a asp-action="Delete" asp-route-id="@jobPosting.Id" class="btn btn-danger btn-sm">Delete</a>
+            }
+        </div>
+
+        
     }
 </div>

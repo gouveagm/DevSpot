@@ -52,4 +52,22 @@ public class JobPostingController : Controller
 
         return View(jobPosting);
     }
+
+    
+    [Authorize(Roles = "Admin,Employer")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var jobPosting = await _jobPostingRepository.GetByIdAsync(id);
+        if (jobPosting == null)
+        {
+            return NotFound();
+        }
+        if (jobPosting.PostedById != _userManager.GetUserId(User) && !User.IsInRole("Admin"))
+        {
+            return Forbid();
+        }
+
+        await _jobPostingRepository.DeleteAsync(id);
+        return RedirectToAction(nameof(Index));
+    }
 }
