@@ -1,4 +1,5 @@
-﻿using DevSpot.Models;
+﻿using DevSpot.Constants;
+using DevSpot.Models;
 using DevSpot.Repository;
 using DevSpot.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -51,5 +52,31 @@ public class JobPostingController : Controller
         }
 
         return View(jobPosting);
+    }
+
+    [HttpDelete]
+    [Authorize(Roles = "Admin,Employer")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var jobPosting = await _jobPostingRepository.GetByIdAsync(id);
+        if (jobPosting == null)
+        {
+            return NotFound($"Job posting with ID {id} not found.");
+        }
+
+        if (User.IsInRole(Roles.Employer) && jobPosting.PostedById != _userManager.GetUserId(User))
+        {
+            return Forbid("You do not have permission to delete this job posting.");
+        }
+
+        try
+        {
+            await this._jobPostingRepository.DeleteAsync(id);
+            return Ok();
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
     }
 }
